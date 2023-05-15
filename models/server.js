@@ -1,5 +1,6 @@
 const express = require('express');
 const port = process.env.PORT || 3000;
+const { dbConnection }= require('../database/config.js');
 
 class Server{
 
@@ -8,8 +9,18 @@ class Server{
         this.port = process.env.PORT
         this.usersPath = '/users';
         this.productsPath = '/products';
+        this.conectarDB();
 
         this.routes();
+    }
+
+    async conectarDB(){
+        await dbConnection();
+    }
+
+    middleware() {
+        //lectura y parseo del body
+        this.app.use(express.json());
     }
 
     routes(){     
