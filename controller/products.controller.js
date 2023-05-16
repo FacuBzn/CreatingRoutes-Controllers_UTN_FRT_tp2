@@ -26,9 +26,9 @@ const createProduct = async (req, res = response) => {
   };
 
 const getAllProducts = async (req, res = response) => {
-    try {
-      const products = await Product.find();
-      const total = await Product.countDocuments();  
+    try {            
+      const query = {estado:true};
+      const [total, products] = await Promise.all([Product.countDocuments(query),Product.find(query)]);  
       res.status(200).json({
         success: true,
         message: 'Se obtuvieron todos los productos exitosamente',
