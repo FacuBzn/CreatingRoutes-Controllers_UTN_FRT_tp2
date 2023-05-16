@@ -24,14 +24,11 @@ const createProduct = async (req, res = response) => {
       });
     }
   };
-  
-
 
 const getAllProducts = async (req, res = response) => {
     try {
       const products = await Product.find();
-      const total = await Product.countDocuments();
-  
+      const total = await Product.countDocuments();  
       res.status(200).json({
         success: true,
         message: 'Se obtuvieron todos los productos exitosamente',
@@ -45,8 +42,7 @@ const getAllProducts = async (req, res = response) => {
         error: 'Error al obtener los productos',
       });
     }
-};
-  
+}; 
 
 const getProductById = async (req, res = response) => {
     try {
@@ -58,8 +54,7 @@ const getProductById = async (req, res = response) => {
           success: false,
           error: 'El producto no fue encontrado',
         });
-      }
-  
+      }  
       res.status(200).json({
         success: true,
         message: 'Producto obtenido correctamente',
@@ -73,8 +68,6 @@ const getProductById = async (req, res = response) => {
       });
     }
   };
-  
-
 
 const updateProduct = async (req, res = response) => {
     try {
@@ -104,7 +97,6 @@ const updateProduct = async (req, res = response) => {
     }
   };
 
-
 const deleteProduct = async (req, res = response) => {
     try {
       const { id } = req.params;
@@ -115,8 +107,7 @@ const deleteProduct = async (req, res = response) => {
           success: false,
           error: 'El producto no fue encontrado',
         });
-      }
-      
+      }    
       res.status(200).json({
         success: true,
         message: 'Producto eliminado correctamente',
@@ -130,7 +121,6 @@ const deleteProduct = async (req, res = response) => {
       });
     }
   };
-
 
 module.exports = { 
     getAllProducts,
