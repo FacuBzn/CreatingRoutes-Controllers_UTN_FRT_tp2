@@ -10,9 +10,11 @@ class Server{
         this.usersPath = '/users';
         this.productsPath = '/products';
         this.conectarDB();
+        this.middleware();
 
         this.routes();
     }
+    
 
     async conectarDB(){
         await dbConnection();

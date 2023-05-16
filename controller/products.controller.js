@@ -1,120 +1,141 @@
 const { response } = require('express');
-const Products = require('../models/products');
+const Product = require('../models/products');
 
-const createProducts = async (req, res = response) =>{
+const createProduct = async (req, res = response) => {
     try {
-
-        const { name,  price, description, quantity } = req.body || {};                   
-       
-        const product = new Products ({            
-            name,
-            price,
-            description,
-            quantity,
-        });
-        
-         await product.save();
-        
-        console.log('new prod:',product);
-        
-        res.status(201).json({ 
-            method: 'POST',
-            product       
-        });       
-        
+      const { name, price, description, quantity } = req.body || {};
+      const product = new Product({
+        name,
+        price,
+        description,
+        quantity,
+      }); 
+      await product.save(); 
+      res.status(201).json({
+        success: true,
+        message: 'Producto creado exitosamente',
+        product,
+      });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Error al crear los productos'
-        });
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear el producto',
+      });
     }
-}
+  };
+  
 
 
-const getAllProducts = async (req, res = response) => { // get request all users         
-    
-    try {           
-        const products = [
-            {
-                "name":"iphone 12",
-                "description":"Cellphone with camera",
-                "price": 980
-            },
-            {
-                "name":"samsung pockets",
-                "description":"Cellphone with camera",
-                "price": 450
-            },
-            {
-                "name":"xiaomi Mi A3",
-                "description":"Cellphone with camera",
-                "price": 880
-            },
-            {
-                "name":"Motorola X ",
-                "description":"Cellphone with camera",
-                "price": 690
-            }
-        ]   
-
-        res.status(200).json({
-            method: 'GET',
-            msg: 'this is all the products',
-            products
-        });        
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Error al obtener los productos'
-        });
-    }
-}
-
-const getProductById = async (req, res = response) =>{
+const getAllProducts = async (req, res = response) => {
     try {
-        
+      const products = await Product.find();
+      const total = await Product.countDocuments();
+  
+      res.status(200).json({
+        success: true,
+        message: 'Se obtuvieron todos los productos exitosamente',
+        total: total,
+        products: products,
+      });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Error al obtener los productos por id'
-        });
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener los productos',
+      });
     }
-}
+};
+  
 
-
-
-
-const updateProducts = async (req, res = response) =>{
+const getProductById = async (req, res = response) => {
     try {
-        
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Error al actualizar los productos'
+      const { id } = req.params;
+      const product = await Product.findById(id);
+  
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          error: 'El producto no fue encontrado',
         });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: 'Producto obtenido correctamente',
+        product: product,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener los productos por id',
+      });
     }
-}
+  };
+  
 
 
-const deleteProducts = async (req, res = response) =>{
+const updateProduct = async (req, res = response) => {
     try {
-        
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            msg: 'Error al eliminar los productos'
+      const { id } = req.params;
+      const { _id, status, ...rest } = req.body;
+  
+      const product = await Product.findByIdAndUpdate(id, rest, { new: true });
+  
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          error: 'El producto no fue encontrado',
         });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: 'Producto actualizado correctamente',
+        updatedProduct: product,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar los productos',
+      });
     }
-}
+  };
 
 
-
+const deleteProduct = async (req, res = response) => {
+    try {
+      const { id } = req.params;
+      const product = await Product.findByIdAndUpdate(id, { estado: false });
+      
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          error: 'El producto no fue encontrado',
+        });
+      }
+      
+      res.status(200).json({
+        success: true,
+        message: 'Producto eliminado correctamente',
+        deletedProduct: product,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar el producto',
+      });
+    }
+  };
 
 
 module.exports = { 
     getAllProducts,
     getProductById,
-    createProducts,
-    updateProducts,
-    deleteProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
 };
