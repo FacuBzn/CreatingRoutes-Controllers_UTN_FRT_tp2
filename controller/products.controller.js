@@ -1,14 +1,16 @@
-const { response } = require('express');
+const { response, request } = require('express');
+
 const Product = require('../models/products');
 
 const createProduct = async (req, res = response) => {
     try {
-      const { name, price, description, quantity } = req.body || {};
+      const { name, price, description, quantity, category} = req.body || {};
       const product = new Product({
         name,
         price,
         description,
         quantity,
+        category: category,
       }); 
       await product.save(); 
       res.status(201).json({
@@ -25,10 +27,14 @@ const createProduct = async (req, res = response) => {
     }
   };
 
-const getAllProducts = async (req, res = response) => {
+const getAllProducts = async (req= request, res = response) => {
     try {            
       const query = {estado:true};
-      const [total, products] = await Promise.all([Product.countDocuments(query),Product.find(query)]);  
+      const [total, products] = await Promise.all([
+        Product.countDocuments(query),
+        Product.find(query).select("name price description category").sort({price: -1}).populate("category")
+      ]);  
+
       res.status(200).json({
         success: true,
         message: 'Se obtuvieron todos los productos exitosamente',
@@ -47,7 +53,7 @@ const getAllProducts = async (req, res = response) => {
 const getProductById = async (req, res = response) => {
     try {
       const { id } = req.params;
-      const product = await Product.findById(id);
+      const product = await Product.findById(id).populate("category");
   
       if (!product) {
         return res.status(404).json({
@@ -74,7 +80,7 @@ const updateProduct = async (req, res = response) => {
       const { id } = req.params;
       const { _id, status, ...rest } = req.body;
   
-      const product = await Product.findByIdAndUpdate(id, rest, { new: true });
+      const product = await Product.findByIdAndUpdate(id, rest, { new: true }).populate("category");
   
       if (!product) {
         return res.status(404).json({
@@ -100,7 +106,7 @@ const updateProduct = async (req, res = response) => {
 const deleteProduct = async (req, res = response) => {
     try {
       const { id } = req.params;
-      const product = await Product.findByIdAndUpdate(id, { estado: false });
+      const product = await Product.findByIdAndUpdate(id, { estado: false }).populate("category");
       
       if (!product) {
         return res.status(404).json({

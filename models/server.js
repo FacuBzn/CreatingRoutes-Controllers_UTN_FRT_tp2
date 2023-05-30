@@ -9,6 +9,7 @@ class Server{
         this.port = process.env.PORT
         this.usersPath = '/users';
         this.productsPath = '/products';
+        this.categoryPath = '/category';
         this.conectarDB();
         this.middleware();
 
@@ -28,6 +29,7 @@ class Server{
     routes(){     
         this.app.use( this.usersPath , require('../routes/users.routes'));
         this.app.use( this.productsPath , require('../routes/products.routes'));
+        this.app.use( this.categoryPath , require('../routes/categories.routes.js'));
     }
 
     listen(){        

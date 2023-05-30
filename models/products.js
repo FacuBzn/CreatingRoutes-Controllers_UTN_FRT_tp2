@@ -1,11 +1,31 @@
 const { model, Schema, mongoose} = require('mongoose');
+const Category = require('../models/categories');
 
 const ProductSchema = new mongoose.Schema ({
 
-    name : {type:String},    
-    price: {type:Number},            
-    description:{type:String},           
-    quantity:  {type:Number},          
+    name : {
+        type:String,
+        required: [true,"The field name is required"]
+    },  
+
+    price: {
+        type:Number,
+        min: [0, "The value of the field must be more than 0"]
+    }, 
+
+    code: {
+        type:Number
+    },  
+
+    description:{
+        type:String
+    },
+
+    category:  {
+        type: mongoose.Schema.ObjectId,
+        ref:"Categories"
+    },
+
     estado: {
         type: Boolean,        
         default: true
