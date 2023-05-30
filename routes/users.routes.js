@@ -1,10 +1,13 @@
 const { Router } = require('express');
-const { authUsers, registerUsers} = require('../controller/users.controller');
+const { check } = require('express-validator');
+const { validateFields }= require('../middlewares/validate_fields');
+
+const { loginUsers, createUsers} = require('../controller/users.controller');
 
 const router = Router();
 
-router.post('/login' ,authUsers );
+router.post('/register' , createUsers );
 
-router.post('/register' ,registerUsers );
+router.post('/login' , loginUsers );
 
 module.exports = router;

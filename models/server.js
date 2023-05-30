@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const port = process.env.PORT || 3000;
 const { dbConnection }= require('../database/config.js');
 
@@ -22,6 +23,10 @@ class Server{
     }
 
     middleware() {
+        //cors
+        this.app.use(cors());
+        //lectura y parseo del body
+        this.app.use(express.json());
         //lectura y parseo del body
         this.app.use(express.json());
     }
