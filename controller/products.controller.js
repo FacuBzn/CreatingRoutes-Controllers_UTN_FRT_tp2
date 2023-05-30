@@ -4,10 +4,11 @@ const Product = require('../models/products');
 
 const createProduct = async (req, res = response) => {
     try {
-      const { name, price, description, quantity, category} = req.body || {};
+      const { name, price, fav, description, quantity, category} = req.body || {};
       const product = new Product({
         name,
         price,
+        fav,
         description,
         quantity,
         category: category,
@@ -29,7 +30,7 @@ const createProduct = async (req, res = response) => {
 
 const getAllProducts = async (req= request, res = response) => {
     try {            
-      const query = {estado:true};
+      const query = {estado:true, fav:true,};
       const [total, products] = await Promise.all([
         Product.countDocuments(query),
         Product.find(query).select("name price description category").sort({price: -1}).populate("category")
@@ -37,7 +38,7 @@ const getAllProducts = async (req= request, res = response) => {
 
       res.status(200).json({
         success: true,
-        message: 'Se obtuvieron todos los productos exitosamente',
+        message: 'Se obtuvieron todos los productos DESTACADOS',
         total: total,
         products: products,
       });

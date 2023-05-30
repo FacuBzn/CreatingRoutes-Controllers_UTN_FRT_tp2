@@ -17,6 +17,11 @@ const ProductSchema = new mongoose.Schema ({
         type:Number
     },  
 
+    fav: {
+        type:Boolean,
+        default: false
+    },  
+
     description:{
         type:String
     },
